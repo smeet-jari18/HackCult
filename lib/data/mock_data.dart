@@ -342,12 +342,9 @@ class MockData {
         color: AppColors.themeHealthy),
   ];
 
-<<<<<<< HEAD
   static TaskItem? taskByIdOrNull(String id) =>
       tasks.where((t) => t.id == id).firstOrNull;
 
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   static BadgeItem badgeById(String id) =>
       badges.firstWhere((b) => b.id == id, orElse: () => badges.first);
 

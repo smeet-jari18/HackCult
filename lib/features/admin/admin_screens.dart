@@ -944,11 +944,7 @@ class _AdminOverviewScreenState extends State<AdminOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
     if (AppScope.of(context).isLiveBackend) {
-=======
-    if (AppScope.of(context).useFirebase) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       return const _LiveAdminUnavailable(
         title: 'Live programme reporting is not connected',
         message:
@@ -1436,11 +1432,7 @@ class _AdminLeadsScreenState extends State<AdminLeadsScreen> {
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
     if (AppScope.read(context).isLiveBackend) {
-=======
-    if (AppScope.read(context).useFirebase) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       _loadLeads();
     }
   }
@@ -1504,11 +1496,7 @@ class _AdminLeadsScreenState extends State<AdminLeadsScreen> {
   Widget build(BuildContext context) {
     final s = AppScope.of(context);
     final t = Theme.of(context).textTheme;
-<<<<<<< HEAD
     final all = s.isLiveBackend ? s.adminLeads : MockData.leads;
-=======
-    final all = s.useFirebase ? s.adminLeads : MockData.leads;
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     final list = all
         .where((l) =>
             (_status == 'all' || l.status == _status) &&
@@ -1521,11 +1509,7 @@ class _AdminLeadsScreenState extends State<AdminLeadsScreen> {
     return ListView(
       padding: const EdgeInsets.all(28),
       children: [
-<<<<<<< HEAD
         if (s.isLiveBackend) ...[
-=======
-        if (s.useFirebase) ...[
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
           const InfoBanner(
             text:
                 'Live survey requests submitted by users. Contact details are restricted to authorised staff.',
@@ -1665,11 +1649,7 @@ class _AdminLeadsScreenState extends State<AdminLeadsScreen> {
                               }
                             },
                             itemBuilder: (_) => [
-<<<<<<< HEAD
                               if (!s.isLiveBackend) ...[
-=======
-                              if (!s.useFirebase) ...[
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                                 const PopupMenuItem(
                                     value: 'assign',
                                     child: Text('Assign vendor…')),
@@ -1771,11 +1751,7 @@ class _AdminContentScreenState extends State<AdminContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
     if (AppScope.of(context).isLiveBackend) {
-=======
-    if (AppScope.of(context).useFirebase) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       return const _LiveAdminUnavailable(
         title: 'Live task and scheme editing is not connected',
         message:
@@ -1979,11 +1955,7 @@ class _AdminCampaignsScreenState extends State<AdminCampaignsScreen> {
 
   Future<void> _send({bool test = false}) async {
     final s = AppScope.read(context);
-<<<<<<< HEAD
     if (!s.isLiveBackend) {
-=======
-    if (!s.useFirebase) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       showAppSnack(
           context,
           test
@@ -1998,7 +1970,6 @@ class _AdminCampaignsScreenState extends State<AdminCampaignsScreen> {
           icon: Icons.error_outline_rounded, color: AppColors.error);
       return;
     }
-<<<<<<< HEAD
     if (s.useSupabase) {
       showAppSnack(
           context,
@@ -2009,8 +1980,6 @@ class _AdminCampaignsScreenState extends State<AdminCampaignsScreen> {
           color: AppColors.warning);
       return;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     setState(() => _sending = true);
     try {
       final callable = FirebaseFunctions.instanceFor(region: 'asia-south1')
@@ -2045,11 +2014,7 @@ class _AdminCampaignsScreenState extends State<AdminCampaignsScreen> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
     final live = AppScope.of(context).isLiveBackend;
-=======
-    final live = AppScope.of(context).useFirebase;
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     final t = Theme.of(context).textTheme;
     final composer = _Panel(
       title: 'Compose nudge',

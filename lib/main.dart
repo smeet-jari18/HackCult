@@ -8,10 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'app.dart';
 import 'core/services/notification_service.dart';
-<<<<<<< HEAD
 import 'data/supabase/supabase_config.dart';
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 import 'firebase_options.dart';
 
 /// Runs in a separate isolate when a push arrives while the app is closed.
@@ -23,7 +20,6 @@ Future<void> _onBackgroundMessage(RemoteMessage message) async {
   debugPrint('Background push: ${message.messageId}');
 }
 
-<<<<<<< HEAD
 // ---------------------------------------------------------------------------
 // Backend selection (priority: Supabase → Firebase → demo data)
 // ---------------------------------------------------------------------------
@@ -72,15 +68,6 @@ Future<void> main() async {
     if (!kIsWeb) {
       FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
     }
-=======
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  if (!kIsWeb) {
-    FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   }
   // Local reminders (peak-hour nudge 17:30, streak 20:30, bill 1st of month).
   await NotificationService.init();
@@ -89,9 +76,5 @@ Future<void> main() async {
   await initializeDateFormatting('en_IN');
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-<<<<<<< HEAD
   runApp(LifeMitraApp(useFirebase: useFirebase));
-=======
-  runApp(const LifeMitraApp(useFirebase: true));
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 }

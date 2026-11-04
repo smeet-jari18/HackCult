@@ -3,15 +3,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-<<<<<<< HEAD
 import '../../core/services/proof_picker.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/proof_picker_sheet.dart';
-=======
-import '../../core/theme/app_theme.dart';
-import '../../core/utils/formatters.dart';
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 import '../../core/widgets/v3.dart';
 import '../../core/widgets/widgets.dart';
 import '../../data/app_state.dart';
@@ -24,10 +19,6 @@ class ImpactScreen extends StatefulWidget {
   State<ImpactScreen> createState() => _ImpactScreenState();
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 class _ImpactScreenState extends State<ImpactScreen> {
   int _tab = 0;
   bool _breakdownOpen = true;
@@ -148,13 +139,8 @@ class _ImpactScreenState extends State<ImpactScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InkWell(
-<<<<<<< HEAD
                           onTap: () =>
                               setState(() => _breakdownOpen = !_breakdownOpen),
-=======
-                          onTap: () => setState(
-                              () => _breakdownOpen = !_breakdownOpen),
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                           child: Row(
                             children: [
                               const IconBubble(Icons.pie_chart_outline_rounded,
@@ -199,12 +185,8 @@ class _ImpactScreenState extends State<ImpactScreen> {
                             title: 'PNG / LPG Cooking',
                             kg: latest.cookingKg,
                             total: latest.co2Kg,
-<<<<<<< HEAD
                             detail:
                                 'Cooking fuel · ${s.gas?.isPng == true ? 'PNG' : 'LPG'}',
-=======
-                            detail: 'Cooking fuel · ${s.gas?.isPng == true ? 'PNG' : 'LPG'}',
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                             color: const Color(0xFF8A5A00),
                           ),
                           const SizedBox(height: 16),
@@ -539,10 +521,6 @@ class _BreakdownRow extends StatelessWidget {
   }
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 class _CreditsCard extends StatelessWidget {
   const _CreditsCard({required this.points, required this.ledger});
   final int points;
@@ -556,7 +534,6 @@ class _CreditsCard extends StatelessWidget {
     for (final e in ledger) {
       if (e.delta <= 0) continue;
       final r = e.reason.toLowerCase();
-<<<<<<< HEAD
       if (r.contains('bill') ||
           r.contains('meter') ||
           r.contains('verified') ||
@@ -565,11 +542,6 @@ class _CreditsCard extends StatelessWidget {
       } else if (r.contains('peak') ||
           r.contains('solar hours') ||
           r.contains('shift')) {
-=======
-      if (r.contains('bill') || r.contains('meter') || r.contains('verified') || r.contains('saved')) {
-        meter += e.delta;
-      } else if (r.contains('peak') || r.contains('solar hours') || r.contains('shift')) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
         peak += e.delta;
       } else {
         tasks += e.delta;
@@ -620,12 +592,7 @@ class _CreditsCard extends StatelessWidget {
           for (final (ic, label, pts) in rows)
             Container(
               margin: const EdgeInsets.only(bottom: 8),
-<<<<<<< HEAD
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-=======
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
               decoration: BoxDecoration(
                   color: AppColors.tint,
                   borderRadius: BorderRadius.circular(8)),
@@ -643,18 +610,12 @@ class _CreditsCard extends StatelessWidget {
           SizedBox(
             height: 48,
             child: OutlinedButton.icon(
-<<<<<<< HEAD
               onPressed: () => showAppSnack(context,
                   'Official PDF certificate will be issued after GEDA verification. Your ledger is in Profile → Points history.',
                   icon: Icons.picture_as_pdf_outlined),
               icon: const Icon(Icons.download_outlined, size: 18),
               label: const Text(
                   'Download Official Carbon Offset Certificate (PDF)',
-=======
-              onPressed: () => showAppSnack(context, 'Official PDF certificate will be issued after GEDA verification. Your ledger is in Profile → Points history.', icon: Icons.picture_as_pdf_outlined),
-              icon: const Icon(Icons.download_outlined, size: 18),
-              label: const Text('Download Official Carbon Offset Certificate (PDF)',
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                   textAlign: TextAlign.center),
             ),
           ),
@@ -779,12 +740,8 @@ class _AddMonthScreenState extends State<AddMonthScreen> {
   DateTime _month = DateTime(DateTime.now().year, DateTime.now().month);
   bool _byBill = false;
   final _value = TextEditingController();
-<<<<<<< HEAD
   PickedProof? _proof;
   bool get _photo => _proof != null;
-=======
-  bool _photo = false;
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   bool _sameCooking = true;
   bool _sameTravel = true;
   bool _saving = false;
@@ -831,7 +788,6 @@ class _AddMonthScreenState extends State<AddMonthScreen> {
     setState(() => _saving = true);
     late final int points;
     try {
-<<<<<<< HEAD
       String? proofPath;
       if (_proof != null && s.isLiveBackend) {
         proofPath = await s.uploadBillProof(
@@ -841,17 +797,11 @@ class _AddMonthScreenState extends State<AddMonthScreen> {
       } else if (_proof != null) {
         await Future<void>.delayed(const Duration(milliseconds: 600));
       }
-=======
-      await Future<void>.delayed(const Duration(milliseconds: 600));
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       points = await s.addMonth(
         month: _month,
         units: units,
         fromBill: _photo,
-<<<<<<< HEAD
         proofPath: proofPath,
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       );
     } catch (error, stackTrace) {
       FlutterError.reportError(FlutterErrorDetails(
@@ -876,11 +826,7 @@ class _AddMonthScreenState extends State<AddMonthScreen> {
       context,
       points > 0
           ? 'Saved ${saved.round()} units vs baseline · +$points points (bill verified)'
-<<<<<<< HEAD
           : s.isLiveBackend
-=======
-          : s.useFirebase
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
               ? 'Entry saved. Reward points are unavailable until secure verification is deployed.'
               : saved > 0
                   ? 'Saved ${saved.round()} units vs baseline. Add a bill photo next time to earn points!'
@@ -959,7 +905,6 @@ class _AddMonthScreenState extends State<AddMonthScreen> {
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 20),
-<<<<<<< HEAD
             Text('Bill photo (for verified points)', style: t.titleSmall),
             const SizedBox(height: 8),
             InkWell(
@@ -1039,77 +984,6 @@ class _AddMonthScreenState extends State<AddMonthScreen> {
                       ),
               ),
             ),
-=======
-            if (s.useFirebase) ...[
-              const InfoBanner(
-                text:
-                    'Bill photo verification is not configured yet. You can save the monthly units now; rewards will be available after secure verification is deployed.',
-                icon: Icons.info_outline_rounded,
-              ),
-            ] else ...[
-              Text('Bill photo (for verified points)', style: t.titleSmall),
-              const SizedBox(height: 8),
-              InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: () => setState(() => _photo = !_photo),
-                child: Container(
-                  height: 130,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: _photo ? AppColors.primarySoft : AppColors.surface,
-                    border: Border.all(
-                        color: _photo ? AppColors.primary : AppColors.border,
-                        width: 1.5),
-                  ),
-                  child: _photo
-                      ? Row(
-                          children: [
-                            Container(
-                              width: 110,
-                              margin: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  color: const Color(0xFFDDE7DD),
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: const Icon(Icons.receipt_long_rounded,
-                                  size: 40, color: Colors.white),
-                            ),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      'bill_${_month.year}${_month.month.toString().padLeft(2, '0')}.jpg',
-                                      style: t.titleSmall),
-                                  const SizedBox(height: 4),
-                                  const StatusTag(
-                                      label: 'OCR: units detected ✓',
-                                      color: AppColors.success),
-                                  const SizedBox(height: 6),
-                                  Text('Tap to remove', style: t.labelSmall),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add_a_photo_outlined,
-                                color: AppColors.primary, size: 30),
-                            const SizedBox(height: 8),
-                            Text('Add bill photo',
-                                style: t.labelLarge
-                                    ?.copyWith(color: AppColors.primary)),
-                            Text(
-                                'Earn ${s.config.pointsPerUnitSaved} points per unit saved',
-                                style: t.labelSmall),
-                          ],
-                        ),
-                ),
-              ),
-            ],
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
             const SizedBox(height: 20),
             Text('Other sources', style: t.titleSmall),
             const SizedBox(height: 4),

@@ -315,11 +315,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 ),
               const SizedBox(height: 12),
               InfoBanner(
-<<<<<<< HEAD
                   text: s.isLiveBackend
-=======
-                  text: s.useFirebase
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                       ? 'Rankings update live from GEDA servers · weekly points reset every Monday.'
                       : 'Points reset weekly for the challenge board. All-time points decide your level.',
                   icon: Icons.emoji_events_outlined,
@@ -931,11 +927,7 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
         leading: const SafeBackButton(fallback: '/community'),
         title: const Text('Join a community'),
         actions: [
-<<<<<<< HEAD
           if (s.isLiveBackend)
-=======
-          if (s.useFirebase)
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
             IconButton(
               tooltip: 'Refresh communities',
               onPressed: () async {

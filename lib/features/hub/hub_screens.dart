@@ -1256,11 +1256,7 @@ Future<void> showRequestSurveySheet(BuildContext context,
                   style: t.titleLarge),
               const SizedBox(height: 6),
               Text(
-<<<<<<< HEAD
                   s.isLiveBackend
-=======
-                  s.useFirebase
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                       ? 'Your request will be saved to your account. Vendor contact is not connected yet; your details will not be sent automatically.'
                       : 'A GEDA-empanelled vendor will visit, verify roof & shading, and share a final quote. No obligation.',
                   style: t.bodyMedium),
@@ -1297,11 +1293,7 @@ Future<void> showRequestSurveySheet(BuildContext context,
                 contentPadding: EdgeInsets.zero,
                 controlAffinity: ListTileControlAffinity.leading,
                 title: Text(
-<<<<<<< HEAD
                     s.isLiveBackend
-=======
-                    s.useFirebase
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                         ? 'Save my contact number, preferred time and estimate with this account'
                         : 'Share my name, district & estimate with GEDA and the vendor',
                     style: t.bodySmall),
@@ -1310,11 +1302,7 @@ Future<void> showRequestSurveySheet(BuildContext context,
               PrimaryButton(
                 label: submitting
                     ? 'Saving...'
-<<<<<<< HEAD
                     : s.isLiveBackend
-=======
-                    : s.useFirebase
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                         ? 'Save request'
                         : 'Submit request  · +${s.config.solarLeadPoints} pts',
                 onPressed:
@@ -1330,11 +1318,7 @@ Future<void> showRequestSurveySheet(BuildContext context,
                                   type: vendor == null ? 'survey' : 'quote');
                               if (!ctx.mounted) return;
                               Navigator.pop(ctx);
-<<<<<<< HEAD
                               if (s.isLiveBackend) {
-=======
-                              if (s.useFirebase) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                                 showAppSnack(
                                   context,
                                   'Request saved to your account. Vendor contact is not connected yet.',

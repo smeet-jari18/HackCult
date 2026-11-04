@@ -7,10 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:google_sign_in/google_sign_in.dart';
-<<<<<<< HEAD
 import 'package:supabase_flutter/supabase_flutter.dart';
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 
 import '../core/logic/calculators.dart';
 import '../core/services/notification_service.dart';
@@ -18,11 +15,8 @@ import '../core/services/push_service.dart';
 import 'bill_proof_storage.dart';
 import 'mock_data.dart';
 import 'models.dart';
-<<<<<<< HEAD
 import 'supabase/supabase_config.dart';
 import 'supabase/supabase_repo.dart';
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 
 /// App state backed by Firebase in production and deterministic mock data in tests.
 /// Fires only when the *auth/route-gating* state changes (sign-in, sign-out,
@@ -74,7 +68,6 @@ CommunityGoal? _goalFromCommunityData(String id, Map<String, dynamic> data) {
 
 class AppState extends ChangeNotifier {
   final AuthChanges authChanges = AuthChanges();
-<<<<<<< HEAD
 
   /// [useSupabase] takes priority: Supabase Postgres + Supabase Auth.
   /// [useFirebase] (legacy) is still supported so the old backend keeps working.
@@ -98,10 +91,6 @@ class AppState extends ChangeNotifier {
       final restored = SupabaseConfig.client.auth.currentUser;
       if (restored != null) unawaited(_applySupabaseUser(restored));
     } else if (useFirebase) {
-=======
-  AppState({this.useFirebase = false}) {
-    if (useFirebase) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       _authSubscription = _auth.authStateChanges().listen(
         (firebaseUser) => unawaited(_applyAuthUser(firebaseUser)),
         onError: (Object error, StackTrace stackTrace) {
@@ -117,7 +106,6 @@ class AppState extends ChangeNotifier {
     }
   }
 
-<<<<<<< HEAD
   final bool useSupabase;
   final bool useFirebase;
 
@@ -136,18 +124,11 @@ class AppState extends ChangeNotifier {
       _profileSubscription;
   StreamSubscription<Map<String, dynamic>>? _supabaseProfileSubscription;
   RealtimeChannel? _supabaseProfileChannel;
-=======
-  final bool useFirebase;
-  StreamSubscription<firebase_auth.User?>? _authSubscription;
-  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
-      _profileSubscription;
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   firebase_auth.FirebaseAuth get _auth => firebase_auth.FirebaseAuth.instance;
   FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   @override
   void dispose() {
-<<<<<<< HEAD
     unawaited(_supabaseAuthSubscription?.cancel());
     unawaited(_authSubscription?.cancel());
     unawaited(_profileSubscription?.cancel());
@@ -156,10 +137,6 @@ class AppState extends ChangeNotifier {
     if (channel != null) {
       unawaited(SupabaseConfig.client.removeChannel(channel));
     }
-=======
-    unawaited(_authSubscription?.cancel());
-    unawaited(_profileSubscription?.cancel());
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     authChanges.dispose();
     super.dispose();
   }
@@ -169,7 +146,6 @@ class AppState extends ChangeNotifier {
   late final solarCalc = SolarCalculator(config);
   late final BillProofStorage billProofStorage = BillProofStorage();
 
-<<<<<<< HEAD
   /// Bill-proof uploads go to Supabase Storage in Supabase mode and to
   /// Firebase Storage otherwise.
   Future<String> uploadBillProof({
@@ -184,8 +160,6 @@ class AppState extends ChangeNotifier {
         bytes: bytes, contentType: contentType);
   }
 
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   // ---------- Auth ----------
   AppUser? user;
   final Map<String, (String password, AppUser user)> _accounts = {};
@@ -193,11 +167,7 @@ class AppState extends ChangeNotifier {
   final Map<String, Community> _communities = {};
   final Map<String, CommunityGoal> _communityGoals = {};
   List<Community> get communities =>
-<<<<<<< HEAD
       isLiveBackend ? _communities.values.toList() : MockData.communities;
-=======
-      useFirebase ? _communities.values.toList() : MockData.communities;
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 
   void _seedDemoAccounts() {
     final nisha = AppUser(
@@ -229,7 +199,6 @@ class AppState extends ChangeNotifier {
 
   /// Returns an error message or null on success.
   Future<String?> signInWithEmail(String email, String password) async {
-<<<<<<< HEAD
     if (useSupabase) {
       try {
         final authUser = await supabaseRepo.signInWithEmail(email, password);
@@ -239,8 +208,6 @@ class AppState extends ChangeNotifier {
         return SupabaseRepo.friendlyError(error);
       }
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       try {
         final credential = await _auth.signInWithEmailAndPassword(
@@ -289,7 +256,6 @@ class AppState extends ChangeNotifier {
       {required String name,
       required String email,
       required String password}) async {
-<<<<<<< HEAD
     if (useSupabase) {
       try {
         final authUser = await supabaseRepo.signUpWithEmail(
@@ -300,8 +266,6 @@ class AppState extends ChangeNotifier {
         return SupabaseRepo.friendlyError(error);
       }
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       try {
         final credential = await _auth.createUserWithEmailAndPassword(
@@ -339,20 +303,12 @@ class AppState extends ChangeNotifier {
 
   /// Sentinel returned when the user dismissed the Google account picker.
   /// Screens treat it as "do nothing" (no error banner).
-<<<<<<< HEAD
-=======
-  static const googleCancelled = 'google-sign-in-cancelled';
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 
   /// Web OAuth client of Firebase project `green-energy-fb652`
   /// (Google Cloud → APIs & Services → Credentials → "Web client (auto
   /// created by Google Service)"). Public by design.
-<<<<<<< HEAD
   static const googleWebClientId =
       '983072556271-5piiu6gfphbvf3moj1ss2kn396oncr2k.apps.googleusercontent.com';
-=======
-  static const googleWebClientId = '983072556271-5piiu6gfphbvf3moj1ss2kn396oncr2k.apps.googleusercontent.com';
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 
   firebase_auth.GoogleAuthProvider _googleProvider() =>
       firebase_auth.GoogleAuthProvider()
@@ -360,7 +316,6 @@ class AppState extends ChangeNotifier {
         ..setCustomParameters({'prompt': 'select_account'});
 
   Future<String?> signInWithGoogle({bool adminPortal = false}) async {
-<<<<<<< HEAD
     if (useSupabase) {
       try {
         await supabaseRepo.signInWithGoogle(adminPortal: adminPortal);
@@ -372,8 +327,6 @@ class AppState extends ChangeNotifier {
         return SupabaseRepo.friendlyError(error);
       }
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       try {
         firebase_auth.UserCredential credential;
@@ -422,7 +375,6 @@ class AppState extends ChangeNotifier {
   }
 
   Future<String?> sendPasswordReset(String email) async {
-<<<<<<< HEAD
     if (useSupabase) {
       try {
         await supabaseRepo.sendPasswordReset(email);
@@ -431,8 +383,6 @@ class AppState extends ChangeNotifier {
         return SupabaseRepo.friendlyError(error);
       }
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       try {
         await _auth.sendPasswordResetEmail(email: email.trim());
@@ -449,7 +399,6 @@ class AppState extends ChangeNotifier {
   void signOut() {
     unawaited(_profileSubscription?.cancel());
     _profileSubscription = null;
-<<<<<<< HEAD
     unawaited(_supabaseProfileSubscription?.cancel());
     _supabaseProfileSubscription = null;
     final channel = _supabaseProfileChannel;
@@ -466,8 +415,6 @@ class AppState extends ChangeNotifier {
             exception: error, stack: st, library: 'Supabase sign-out'));
       }));
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       unawaited(PushService.stop());
       unawaited(NotificationService.cancelAll());
@@ -595,7 +542,6 @@ class AppState extends ChangeNotifier {
     };
   }
 
-<<<<<<< HEAD
   // ======================================================================
   // Supabase session lifecycle
   // ======================================================================
@@ -780,8 +726,6 @@ class AppState extends ChangeNotifier {
     );
   }
 
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   Future<void> _writeInitialProfile(
     firebase_auth.User authUser, {
     String? displayName,
@@ -1273,7 +1217,6 @@ class AppState extends ChangeNotifier {
     );
     final r = footprintCalc.calculate(input);
     final month = DateTime(DateTime.now().year, DateTime.now().month);
-<<<<<<< HEAD
     if (useSupabase) {
       final uid = u.uid;
       u
@@ -1318,8 +1261,6 @@ class AppState extends ChangeNotifier {
       authChanges.bump();
       return;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       final uid = user!.uid;
       final monthId = '${month.year}-${month.month.toString().padLeft(2, '0')}';
@@ -1459,7 +1400,6 @@ class AppState extends ChangeNotifier {
 
   Future<void> _saveTaskStatus(
       TaskItem task, DateTime date, TaskStatus status) async {
-<<<<<<< HEAD
     if (useSupabase) {
       await supabaseRepo.saveTaskStatus(
         uid: user!.uid,
@@ -1469,8 +1409,6 @@ class AppState extends ChangeNotifier {
       );
       return;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (!useFirebase) return;
     await _taskLogReference(task, date).set({
       'taskId': task.id,
@@ -1496,7 +1434,6 @@ class AppState extends ChangeNotifier {
 
   /// Completes a task. Returns a result describing points and unlocks.
   Future<TaskCompletion> completeTask(TaskItem task,
-<<<<<<< HEAD
       {bool withPhoto = false, String? proofPath}) async {
     if (useSupabase) {
       final now = DateTime.now();
@@ -1568,9 +1505,6 @@ class AppState extends ChangeNotifier {
         newBadges: newBadges,
       );
     }
-=======
-      {bool withPhoto = false}) async {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       final now = DateTime.now();
       final communityId = user?.communityId;
@@ -1738,7 +1672,6 @@ class AppState extends ChangeNotifier {
 
   Future<void> markNotApplicable(TaskItem task) async {
     final now = DateTime.now();
-<<<<<<< HEAD
     if (useSupabase) {
       await supabaseRepo.markNotApplicable(uid: user!.uid, taskId: task.id);
       notApplicable.add(task.id);
@@ -1747,8 +1680,6 @@ class AppState extends ChangeNotifier {
       notifyListeners();
       return;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       final batch = _firestore.batch();
       final userRef = _firestore.collection('users').doc(user!.uid);
@@ -1818,12 +1749,8 @@ class AppState extends ChangeNotifier {
   Future<int> addMonth(
       {required DateTime month,
       required double units,
-<<<<<<< HEAD
       required bool fromBill,
       String? proofPath}) async {
-=======
-      required bool fromBill}) async {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     final u = user!;
     final b = baseline;
     final r = footprintCalc.calculate(FootprintInput(
@@ -1832,11 +1759,7 @@ class AppState extends ChangeNotifier {
       petrolL: (b?.transportKg ?? 0) / config.factors.petrol,
     ));
     final saved = max(0.0, u.baselineUnits - units);
-<<<<<<< HEAD
     final points = isLiveBackend
-=======
-    final points = useFirebase
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
         ? 0
         : fromBill
             ? (saved * config.pointsPerUnitSaved).round()
@@ -1847,18 +1770,13 @@ class AppState extends ChangeNotifier {
       electricityKg: r.electricityKg,
       cookingKg: r.cookingKg,
       transportKg: r.transportKg,
-<<<<<<< HEAD
       source:
           fromBill && (proofPath != null || !isLiveBackend) ? 'bill' : 'manual',
-=======
-      source: !useFirebase && fromBill ? 'bill' : 'manual',
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       unitsSaved: saved,
       rupeesSaved: saved * config.avgTariffPerUnit,
       percentChange: b == null ? 0 : (r.totalKg - b.co2Kg) / b.co2Kg * 100,
       pointsAwarded: points,
     );
-<<<<<<< HEAD
     if (useSupabase) {
       var awarded = 0;
       try {
@@ -1902,8 +1820,6 @@ class AppState extends ChangeNotifier {
       notifyListeners();
       return awarded;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       final monthId = '${month.year}-${month.month.toString().padLeft(2, '0')}';
       await _firestore
@@ -1954,35 +1870,22 @@ class AppState extends ChangeNotifier {
   // ---------- Community ----------
   Community? get myCommunity => user?.communityId == null
       ? null
-<<<<<<< HEAD
       : isLiveBackend
-=======
-      : useFirebase
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
           ? _communities[user!.communityId]
           : MockData.communityById(user!.communityId!);
   CommunityGoal? get myGoal => user?.communityId == null
       ? null
-<<<<<<< HEAD
       : isLiveBackend
-=======
-      : useFirebase
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
           ? _communityGoals[user!.communityId]
           : MockData.goals
               .where((g) => g.communityId == user!.communityId)
               .firstOrNull;
 
-<<<<<<< HEAD
   CommunityGoal? goalById(String id) => isLiveBackend
-=======
-  CommunityGoal? goalById(String id) => useFirebase
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       ? _communityGoals[id]
       : MockData.goals.where((goal) => goal.id == id).firstOrNull;
 
   Community? communityById(String id) =>
-<<<<<<< HEAD
       isLiveBackend ? _communities[id] : MockData.communityById(id);
 
   Future<Community?> communityByJoinCode(String code) async {
@@ -1997,12 +1900,6 @@ class AppState extends ChangeNotifier {
       return community;
     }
     if (!isLiveBackend) {
-=======
-      useFirebase ? _communities[id] : MockData.communityById(id);
-
-  Future<Community?> communityByJoinCode(String code) async {
-    if (!useFirebase) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       return MockData.communities
           .where((community) => community.joinCode == code)
           .firstOrNull;
@@ -2022,7 +1919,6 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> refreshCommunities() async {
-<<<<<<< HEAD
     if (useSupabase) {
       final list = await supabaseRepo.communities();
       final goals = await supabaseRepo.goalProgressView();
@@ -2037,8 +1933,6 @@ class AppState extends ChangeNotifier {
       notifyListeners();
       return;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (!useFirebase) return;
     final snapshot =
         await _firestore.collection('communities').limit(100).get();
@@ -2059,7 +1953,6 @@ class AppState extends ChangeNotifier {
   Future<void> refreshCommunityProgress() async {
     final communityId = user?.communityId;
     final goal = myGoal;
-<<<<<<< HEAD
     if (useSupabase && communityId != null && goal != null) {
       try {
         final rows = await supabaseRepo.goalProgressView();
@@ -2077,9 +1970,6 @@ class AppState extends ChangeNotifier {
       return;
     }
     if (!isLiveBackend || communityId == null || goal == null) return;
-=======
-    if (!useFirebase || communityId == null || goal == null) return;
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     final members = await _firestore
         .collection('communities')
         .doc(communityId)
@@ -2100,7 +1990,6 @@ class AppState extends ChangeNotifier {
 
   Future<void> joinCommunity(Community c) async {
     final currentUser = user!;
-<<<<<<< HEAD
     if (useSupabase) {
       try {
         final row = await supabaseRepo.joinCommunity(c.id);
@@ -2124,8 +2013,6 @@ class AppState extends ChangeNotifier {
       }
       return;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       final communityRef = _firestore.collection('communities').doc(c.id);
       final memberRef = communityRef.collection('members').doc(currentUser.uid);
@@ -2188,12 +2075,9 @@ class AppState extends ChangeNotifier {
 
   Future<Community> createCommunity(
       {required String name, required String type, required String pincode}) {
-<<<<<<< HEAD
     if (useSupabase) {
       return _createSupabaseCommunity(name, type, pincode);
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) return _createFirestoreCommunity(name, type, pincode);
     final c = Community(
       id: 'c_${Random().nextInt(1 << 30)}',
@@ -2211,11 +2095,7 @@ class AppState extends ChangeNotifier {
     );
     MockData.communities.insert(0, c);
     user!.communityId = c.id;
-<<<<<<< HEAD
     if (!isLiveBackend && !user!.badges.contains('community_builder')) {
-=======
-    if (!useFirebase && !user!.badges.contains('community_builder')) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       user!.badges = [...user!.badges, 'community_builder'];
       user!.points += 50;
       ledger.insert(
@@ -2301,7 +2181,6 @@ class AppState extends ChangeNotifier {
     return community;
   }
 
-<<<<<<< HEAD
   Future<Community> _createSupabaseCommunity(
       String name, String type, String pincode) async {
     final currentUser = user!;
@@ -2347,15 +2226,10 @@ class AppState extends ChangeNotifier {
 
   /// Online rankings come from the `leaderboard` table, a public projection
   /// maintained by a Postgres trigger (Supabase) or Cloud Function (Firebase).
-=======
-  /// Online rankings come from the `leaderboard` collection, a public
-  /// projection maintained by the `syncLeaderboard` Cloud Function.
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   final Map<String, List<(String, String, int)>> _onlineBoard = {};
   bool leaderboardLoading = false;
 
   Future<void> refreshLeaderboard(String scope, {bool weekly = false}) async {
-<<<<<<< HEAD
     if (useSupabase && user != null) {
       final u = user!;
       leaderboardLoading = true;
@@ -2376,8 +2250,6 @@ class AppState extends ChangeNotifier {
       }
       return;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (!useFirebase || user == null) return;
     final u = user!;
     final field = weekly ? 'weeklyPoints' : 'points';
@@ -2411,7 +2283,6 @@ class AppState extends ChangeNotifier {
   List<LeaderboardEntry> leaderboard(String scope, {bool weekly = false}) {
     final u = user!;
     final myPoints = weekly ? u.weeklyPoints : u.points;
-<<<<<<< HEAD
     final factor = weekly && !isLiveBackend ? 0.12 : 1.0;
     var names = isLiveBackend
         ? (_onlineBoard['$scope|$weekly'] ?? const <(String, String, int)>[])
@@ -2420,16 +2291,6 @@ class AppState extends ChangeNotifier {
       names = names.where((n) => n.$2 == u.district).toList();
     }
     if (!isLiveBackend && scope == 'community') names = names.take(9).toList();
-=======
-    final factor = weekly && !useFirebase ? 0.12 : 1.0;
-    var names = useFirebase
-        ? (_onlineBoard['$scope|$weekly'] ?? const <(String, String, int)>[])
-        : MockData.leaderboardNames;
-    if (!useFirebase && scope == 'district') {
-      names = names.where((n) => n.$2 == u.district).toList();
-    }
-    if (!useFirebase && scope == 'community') names = names.take(9).toList();
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     final all = [
       ...names.map((n) => (n.$1, n.$2, (n.$3 * factor).round(), false)),
       (u.displayName, u.district, myPoints, true),
@@ -2468,7 +2329,6 @@ class AppState extends ChangeNotifier {
       co2Avoided25yKg: r.co2Avoided25yKg,
       createdAt: DateTime.now(),
     );
-<<<<<<< HEAD
     if (useSupabase) {
       try {
         await supabaseRepo.saveSolarAssessment(uid: user!.uid, a: a);
@@ -2504,8 +2364,6 @@ class AppState extends ChangeNotifier {
       notifyListeners();
       return a;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       await _firestore
           .collection('users')
@@ -2585,20 +2443,12 @@ class AppState extends ChangeNotifier {
       phone: phone,
       preferredSlot: preferredSlot,
     );
-<<<<<<< HEAD
     if (isLiveBackend) {
-=======
-    if (useFirebase) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       return _saveSurveyRequest(lead);
     }
     myLeads.add(lead);
     MockData.leads.insert(0, lead);
-<<<<<<< HEAD
     if (!isLiveBackend && !u.badges.contains('solar_pioneer_lead')) {
-=======
-    if (!useFirebase && !u.badges.contains('solar_pioneer_lead')) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       u.badges = [...u.badges, 'solar_pioneer_lead'];
       u.points += config.solarLeadPoints;
       u.weeklyPoints += config.solarLeadPoints;
@@ -2615,7 +2465,6 @@ class AppState extends ChangeNotifier {
   }
 
   Future<Lead> _saveSurveyRequest(Lead lead) async {
-<<<<<<< HEAD
     if (useSupabase) {
       try {
         final saved =
@@ -2627,8 +2476,6 @@ class AppState extends ChangeNotifier {
         throw StateError(SupabaseRepo.friendlyError(error));
       }
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     await _firestore
         .collection('users')
         .doc(user!.uid)
@@ -2703,7 +2550,6 @@ class AppState extends ChangeNotifier {
     final currentUser = user!;
     final previous = _profileData(currentUser);
     edit(currentUser);
-<<<<<<< HEAD
     if (useSupabase) {
       try {
         await supabaseRepo.saveProfile(
@@ -2721,8 +2567,6 @@ class AppState extends ChangeNotifier {
       notifyListeners();
       return;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       try {
         await _firestore.collection('users').doc(currentUser.uid).set(
@@ -2752,10 +2596,7 @@ class AppState extends ChangeNotifier {
 
   void _startDeviceServices(AppUser u) {
     unawaited(_syncReminders(u));
-<<<<<<< HEAD
     if (!useFirebase) return; // FCM is a Firebase-only path in this build
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     unawaited(PushService.start(
       uid: u.uid,
       district: u.district,
@@ -2779,16 +2620,8 @@ class AppState extends ChangeNotifier {
   /// client listens for those server-side changes instead of computing them.
   void _listenToProfile(String uid) {
     unawaited(_profileSubscription?.cancel());
-<<<<<<< HEAD
     _profileSubscription =
         _firestore.collection('users').doc(uid).snapshots().listen((snap) {
-=======
-    _profileSubscription = _firestore
-        .collection('users')
-        .doc(uid)
-        .snapshots()
-        .listen((snap) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       final u = user;
       final data = snap.data();
       if (u == null || u.uid != uid || data == null) return;
@@ -2809,25 +2642,15 @@ class AppState extends ChangeNotifier {
       final badges = data['badges'];
       if (badges is List) {
         final list = badges.cast<String>();
-<<<<<<< HEAD
         if (list.length != u.badges.length || !list.every(u.badges.contains)) {
-=======
-        if (list.length != u.badges.length ||
-            !list.every(u.badges.contains)) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
           u.badges = List<String>.from(list);
           changed = true;
         }
       }
       final role = data['role'];
       if (role is String) {
-<<<<<<< HEAD
         final parsed = UserRole.values
             .firstWhere((r) => r.name == role, orElse: () => u.role);
-=======
-        final parsed = UserRole.values.firstWhere((r) => r.name == role,
-            orElse: () => u.role);
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
         if (parsed != u.role) {
           u.role = parsed;
           changed = true;
@@ -2838,7 +2661,6 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> loadAdminLeads() async {
-<<<<<<< HEAD
     if (useSupabase) {
       if (user?.isAdmin != true) {
         throw StateError('Administrator access is required.');
@@ -2854,9 +2676,6 @@ class AppState extends ChangeNotifier {
       return;
     }
     if (!isLiveBackend) {
-=======
-    if (!useFirebase) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       adminLeads
         ..clear()
         ..addAll(MockData.leads);
@@ -2889,7 +2708,6 @@ class AppState extends ChangeNotifier {
     if (!allowed.contains(status)) {
       throw ArgumentError.value(status, 'status', 'Unsupported lead status');
     }
-<<<<<<< HEAD
     if (useSupabase) {
       if (user?.isAdmin != true) {
         throw StateError('Administrator access is required.');
@@ -2899,8 +2717,6 @@ class AppState extends ChangeNotifier {
       notifyListeners();
       return;
     }
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     if (useFirebase) {
       if (user?.isAdmin != true || lead.ownerUid == null) {
         throw StateError('Administrator access is required.');
@@ -2925,15 +2741,11 @@ class AppState extends ChangeNotifier {
   // ---------- Demo mode ----------
   // ---------- Cooking gas (local to this device for now) ----------
   GasConnection? gas;
-<<<<<<< HEAD
 
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   /// Saves the LPG/PNG connection. Kept in memory; the Firestore `users`
   /// rules whitelist does not include gas fields yet (see TEAM_HANDOFF.md).
   Future<void> saveGasConnection(GasConnection g) async {
     gas = g;
-<<<<<<< HEAD
     if (isLiveBackend && user != null) {
       try {
         await supabaseRepoOrFirestoreSaveGas(g);
@@ -2946,9 +2758,6 @@ class AppState extends ChangeNotifier {
       }
     }
     if (!isLiveBackend && user != null) {
-=======
-    if (!useFirebase && user != null) {
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
       ledger.insert(
           0,
           PointsEntry(
@@ -2962,7 +2771,6 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-<<<<<<< HEAD
   /// Gas connections are stored as a JSON blob on the profile
   /// (`profiles.gas_connection` / `users.gasConnection`).
   Future<void> supabaseRepoOrFirestoreSaveGas(GasConnection g) async {
@@ -2986,8 +2794,6 @@ class AppState extends ChangeNotifier {
         .set({'gasConnection': json}, SetOptions(merge: true));
   }
 
-=======
->>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   bool demoForceNudge = false;
   void triggerDemoNudge() {
     dismissedNudges.remove('peak_shift');
