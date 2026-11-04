@@ -20,8 +20,8 @@ class SupabaseConfig {
       String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '');
 
   /// ↓↓↓ Paste your project values here if you are not using --dart-define.
-  static const String _urlFallback = '';
-  static const String _anonFallback = '';
+  static const String _urlFallback = 'https://zaljyzpxcnrugmyjlhuc.supabase.co';
+  static const String _anonFallback = 'sb_publishable_-_02mXV3wym0gJbns4q5yw_i8M-sJ8-';
 
   static String get url =>
       _urlFromEnv.isNotEmpty ? _urlFromEnv : _urlFallback;
