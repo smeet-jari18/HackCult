@@ -98,8 +98,8 @@ class SupabaseRepo {
       householdSize: _int(p['household_size'], 4),
       homeType: (p['home_type'] as String?) ?? 'flat',
       roofAccess: (p['roof_access'] as String?) ?? 'yes',
-      appliances: _strings(p['appliances'],
-          const ['ac', 'fridge', 'washing_machine', 'geyser']),
+      appliances: _strings(
+          p['appliances'], const ['ac', 'fridge', 'washing_machine', 'geyser']),
       travelMode: (p['travel_mode'] as String?) ?? 'two_wheeler',
       weeklyKm: _dbl(p['weekly_km'], 70),
       baselineUnits: _dbl(p['baseline_units'], 250),
@@ -148,18 +148,16 @@ class SupabaseRepo {
   /// Creates the profile row if the sign-up trigger has not run yet, then
   /// returns the row (avoids the classic "profile missing after Google OAuth").
   Future<Map<String, dynamic>> ensureProfile(User user) async {
-    final existing = await _db
-        .from('profiles')
-        .select()
-        .eq('id', user.id)
-        .maybeSingle();
+    final existing =
+        await _db.from('profiles').select().eq('id', user.id).maybeSingle();
     if (existing != null) return existing;
 
     final meta = user.userMetadata ?? {};
     await _db.from('profiles').upsert({
       'id': user.id,
       'email': user.email ?? '',
-      'display_name': (meta['full_name'] ?? meta['name'] ??
+      'display_name': (meta['full_name'] ??
+          meta['name'] ??
           (user.email ?? 'Citizen').split('@').first),
       'photo_url': meta['avatar_url'],
     });
@@ -175,8 +173,7 @@ class SupabaseRepo {
       .map((rows) => rows.isEmpty ? <String, dynamic>{} : rows.first);
 
   Future<Map<String, dynamic>> fetchProfile(String uid) async {
-    final row =
-        await _db.from('profiles').select().eq('id', uid).maybeSingle();
+    final row = await _db.from('profiles').select().eq('id', uid).maybeSingle();
     return row ?? <String, dynamic>{};
   }
 
@@ -237,9 +234,7 @@ class SupabaseRepo {
         .limit(limit);
     return rows.map((r) {
       final taskId = r['task_id'] as String?;
-      final task = taskId == null
-          ? null
-          : mockTaskById(taskId);
+      final task = taskId == null ? null : mockTaskById(taskId);
       return PointsEntry(
         delta: _int(r['delta'], 0),
         reason: task != null
@@ -275,8 +270,8 @@ class SupabaseRepo {
               annualSavings: _dbl(r['annual_savings'], 0),
               paybackYears: _dbl(r['payback_years'], 0),
               co2Avoided25yKg: _dbl(r['co2_avoided_25y_kg'], 0),
-              createdAt: DateTime.tryParse(
-                      (r['created_at'] as String?) ?? '')?.toLocal() ??
+              createdAt: DateTime.tryParse((r['created_at'] as String?) ?? '')
+                      ?.toLocal() ??
                   DateTime.now(),
             ))
         .toList();
@@ -293,8 +288,11 @@ class SupabaseRepo {
   }
 
   Future<List<Lead>> adminSurveyRequests({int limit = 200}) async {
-    final rows = await _db.rpc('admin_survey_requests', params: {'p_limit': limit});
-    return (rows as List).map((r) => leadFromRow(r as Map<String, dynamic>)).toList();
+    final rows =
+        await _db.rpc('admin_survey_requests', params: {'p_limit': limit});
+    return (rows as List)
+        .map((r) => leadFromRow(r as Map<String, dynamic>))
+        .toList();
   }
 
   static Lead leadFromRow(Map<String, dynamic> r) => Lead(
@@ -317,8 +315,11 @@ class SupabaseRepo {
   // ----------------------------------------------------------- communities --
 
   Future<List<Community>> communities() async {
-    final rows =
-        await _db.from('communities').select().limit(100).order('member_count', ascending: false);
+    final rows = await _db
+        .from('communities')
+        .select()
+        .limit(100)
+        .order('member_count', ascending: false);
     return rows.map(communityFromRow).toList();
   }
 
@@ -360,9 +361,9 @@ class SupabaseRepo {
       metric: (r['goal_metric'] as String?) ?? 'units',
       target: _dbl(r['goal_target'], 100),
       progress: _dbl(r['progress'], 0),
-      endDate: DateTime.tryParse((r['goal_end_date'] as String?) ?? '')
-              ?.toLocal() ??
-          DateTime.now().add(const Duration(days: 30)),
+      endDate:
+          DateTime.tryParse((r['goal_end_date'] as String?) ?? '')?.toLocal() ??
+              DateTime.now().add(const Duration(days: 30)),
       bonusPoints: 0,
     );
   }
@@ -392,7 +393,8 @@ class SupabaseRepo {
   }
 
   Future<Map<String, dynamic>> joinCommunity(String communityId) async {
-    final res = await _db.rpc('join_community', params: {'p_community_id': communityId});
+    final res = await _db
+        .rpc('join_community', params: {'p_community_id': communityId});
     final row = res is List
         ? Map<String, dynamic>.from((res).first as Map)
         : Map<String, dynamic>.from(res as Map);
@@ -452,8 +454,7 @@ class SupabaseRepo {
     } else if (scope == 'community' && communityId != null) {
       query = query.eq('community_id', communityId);
     }
-    final rows =
-        await query.order(field, ascending: false).limit(50);
+    final rows = await query.order(field, ascending: false).limit(50);
     return [
       for (final r in rows)
         if (r['user_id'] != uid)
@@ -475,6 +476,7 @@ class SupabaseRepo {
     required double estUnits,
     required double estCo2,
     bool withPhoto = false,
+    String? proofPath,
   }) async {
     final res = await _db.rpc('award_task_points', params: {
       'p_task_id': taskId,
@@ -483,6 +485,7 @@ class SupabaseRepo {
       'p_est_units': estUnits,
       'p_est_co2': estCo2,
       'p_with_photo': withPhoto,
+      'p_proof_path': proofPath,
     });
     final row = res is List
         ? Map<String, dynamic>.from((res).first as Map)
@@ -572,6 +575,7 @@ class SupabaseRepo {
     required double unitsSaved,
     required double rupeesSaved,
     required double percentChange,
+    String? proofPath,
   }) async {
     final row = await _db
         .from('footprints')
@@ -588,6 +592,7 @@ class SupabaseRepo {
             'units_saved': unitsSaved,
             'rupees_saved': rupeesSaved,
             'percent_change': percentChange,
+            'proof_path': proofPath,
           },
           onConflict: 'user_id,month,is_baseline',
         )
@@ -596,7 +601,8 @@ class SupabaseRepo {
     final id = _int(row['id'], 0);
     var points = 0;
     if (id > 0) {
-      final res = await _db.rpc('award_footprint_points', params: {'p_footprint_id': id});
+      final res = await _db
+          .rpc('award_footprint_points', params: {'p_footprint_id': id});
       points = (res is int) ? res : _int(res, 0);
     }
     return (points, id);
@@ -624,7 +630,8 @@ class SupabaseRepo {
     });
   }
 
-  Future<Lead> saveSurveyRequest({required String uid, required Lead lead}) async {
+  Future<Lead> saveSurveyRequest(
+      {required String uid, required Lead lead}) async {
     final row = await _db
         .from('survey_requests')
         .insert({
@@ -646,7 +653,9 @@ class SupabaseRepo {
   }
 
   Future<void> updateLeadStatus(String leadId, String status) async {
-    await _db.from('survey_requests').update({'status': status}).eq('id', leadId);
+    await _db
+        .from('survey_requests')
+        .update({'status': status}).eq('id', leadId);
   }
 
   /// Bill-proof upload → Supabase Storage bucket `bill-proofs`.
@@ -659,7 +668,8 @@ class SupabaseRepo {
     if (bytes.isEmpty || bytes.length > 10 * 1024 * 1024) {
       throw ArgumentError('Bill proof must be between 1 byte and 10 MB.');
     }
-    if (!const {'image/jpeg', 'image/png', 'image/webp'}.contains(contentType)) {
+    if (!const {'image/jpeg', 'image/png', 'image/webp'}
+        .contains(contentType)) {
       throw ArgumentError('Bill proof must be a JPEG, PNG, or WebP image.');
     }
     final ext = switch (contentType) {
@@ -667,17 +677,20 @@ class SupabaseRepo {
       'image/png' => 'png',
       _ => 'webp',
     };
-    final path =
-        '$uid/${DateTime.now().microsecondsSinceEpoch}.$ext';
+    final path = '$uid/${DateTime.now().microsecondsSinceEpoch}.$ext';
     await _db.storage.from('bill-proofs').uploadBinary(
           path,
           bytes,
           fileOptions: FileOptions(contentType: contentType, upsert: true),
         );
-    // Bucket is private: hand back a short-lived signed URL (the UI only needs
-    // a stable reference to attach to the entry).
-    return _db.storage.from('bill-proofs').createSignedUrl(path, 3600);
+    // Return the storage object path (NOT a signed URL): the DB function
+    // verify_proof_path() checks this exact path against storage.objects.
+    return path;
   }
+
+  /// Short-lived signed URL for previewing an already-uploaded proof.
+  Future<String> proofSignedUrl(String path, {int expiresIn = 3600}) =>
+      _db.storage.from('bill-proofs').createSignedUrl(path, expiresIn);
 
   Future<void> saveGasConnection(String uid, Map<String, dynamic> json) async {
     await _db.from('profiles').update({'gas_connection': json}).eq('id', uid);
@@ -752,7 +765,9 @@ class SupabaseRepo {
       if (msg.contains('email not confirmed')) {
         return 'Please confirm your email address, then sign in.';
       }
-      if (msg.contains('user already registered')) return 'email-already-in-use';
+      if (msg.contains('user already registered')) {
+        return 'email-already-in-use';
+      }
       if (msg.contains('password should be at least')) {
         return 'Choose a stronger password (6+ characters).';
       }
@@ -778,7 +793,8 @@ class SupabaseRepo {
     }
     if (error is StorageException) return error.message;
     final text = error.toString();
-    if (text.contains('SocketException') || text.contains('Failed host lookup')) {
+    if (text.contains('SocketException') ||
+        text.contains('Failed host lookup')) {
       return 'Network error. Check your connection and try again.';
     }
     return 'Something went wrong. Please try again.';

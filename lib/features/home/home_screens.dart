@@ -7,6 +7,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/v3.dart';
 import '../../core/services/notification_service.dart';
+import '../../core/widgets/proof_picker_sheet.dart';
 import '../../core/widgets/widgets.dart';
 import '../../data/app_state.dart';
 import '../../data/models.dart';
@@ -58,22 +59,22 @@ class MainShell extends StatelessWidget {
           if (!didPop && !onHome) context.go('/home');
         },
         child: Scaffold(
-        body: child,
-        bottomNavigationBar: Container(
-          decoration: const BoxDecoration(
-              color: AppColors.surface,
-              border: Border(top: BorderSide(color: AppColors.border))),
-          child: NavigationBar(
-            selectedIndex: _index,
-            onDestinationSelected: (i) => context.go(_tabs[i]),
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            destinations: [
-              for (final d in _destinations)
-                NavigationDestination(
-                    icon: Icon(d.$1), selectedIcon: Icon(d.$2), label: d.$3),
-            ],
+          body: child,
+          bottomNavigationBar: Container(
+            decoration: const BoxDecoration(
+                color: AppColors.surface,
+                border: Border(top: BorderSide(color: AppColors.border))),
+            child: NavigationBar(
+              selectedIndex: _index,
+              onDestinationSelected: (i) => context.go(_tabs[i]),
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              destinations: [
+                for (final d in _destinations)
+                  NavigationDestination(
+                      icon: Icon(d.$1), selectedIcon: Icon(d.$2), label: d.$3),
+              ],
+            ),
           ),
-        ),
         ),
       );
     }
@@ -87,58 +88,58 @@ class MainShell extends StatelessWidget {
         if (!didPop && !onHome) context.go('/home');
       },
       child: Scaffold(
-      backgroundColor: AppColors.surfaceLow,
-      body: Row(
-        children: [
-          NavigationRail(
-            extended: extended,
-            minExtendedWidth: 210,
-            backgroundColor: Colors.white,
-            selectedIndex: _index,
-            onDestinationSelected: (i) => context.go(_tabs[i]),
-            labelType: extended
-                ? NavigationRailLabelType.none
-                : NavigationRailLabelType.all,
-            indicatorColor: AppColors.tint,
-            selectedIconTheme: const IconThemeData(color: AppColors.primary),
-            selectedLabelTextStyle: Theme.of(context)
-                .textTheme
-                .labelMedium
-                ?.copyWith(
-                    color: AppColors.primary, fontWeight: FontWeight.w700),
-            leading: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 16, 8, 20),
-              child: Image.asset('assets/images/emblem.png',
-                  width: extended ? 64 : 40, height: extended ? 64 : 40),
+        backgroundColor: AppColors.surfaceLow,
+        body: Row(
+          children: [
+            NavigationRail(
+              extended: extended,
+              minExtendedWidth: 210,
+              backgroundColor: Colors.white,
+              selectedIndex: _index,
+              onDestinationSelected: (i) => context.go(_tabs[i]),
+              labelType: extended
+                  ? NavigationRailLabelType.none
+                  : NavigationRailLabelType.all,
+              indicatorColor: AppColors.tint,
+              selectedIconTheme: const IconThemeData(color: AppColors.primary),
+              selectedLabelTextStyle: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(
+                      color: AppColors.primary, fontWeight: FontWeight.w700),
+              leading: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 16, 8, 20),
+                child: Image.asset('assets/images/emblem.png',
+                    width: extended ? 64 : 40, height: extended ? 64 : 40),
+              ),
+              destinations: [
+                for (final d in _destinations)
+                  NavigationRailDestination(
+                      icon: Icon(d.$1),
+                      selectedIcon: Icon(d.$2),
+                      label: Text(d.$3)),
+              ],
             ),
-            destinations: [
-              for (final d in _destinations)
-                NavigationRailDestination(
-                    icon: Icon(d.$1),
-                    selectedIcon: Icon(d.$2),
-                    label: Text(d.$3)),
-            ],
-          ),
-          const VerticalDivider(
-              width: 1, thickness: 1, color: AppColors.border),
-          Expanded(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: contentMax),
-                child: Container(
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(
-                    color: AppColors.background,
-                    border: Border.symmetric(
-                        vertical: BorderSide(color: AppColors.border)),
+            const VerticalDivider(
+                width: 1, thickness: 1, color: AppColors.border),
+            Expanded(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: contentMax),
+                  child: Container(
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(
+                      color: AppColors.background,
+                      border: Border.symmetric(
+                          vertical: BorderSide(color: AppColors.border)),
+                    ),
+                    child: child,
                   ),
-                  child: child,
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -280,8 +281,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   '${u.district.isEmpty ? 'Gujarat' : u.district} Smart Grid Verified',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: t.bodySmall?.copyWith(
-                                      fontWeight: FontWeight.w600)),
+                                  style: t.bodySmall
+                                      ?.copyWith(fontWeight: FontWeight.w600)),
                             ),
                             InkWell(
                               onTap: () => context.go('/impact'),
@@ -373,8 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Join your society',
-                                    style: t.titleMedium),
+                                Text('Join your society', style: t.titleMedium),
                                 Text(
                                     'Compete on the ward leaderboard and earn bonus credits',
                                     style: t.bodySmall),
@@ -415,8 +415,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
     );
   }
-
-
 }
 
 class _ThisMonthCard extends StatelessWidget {
@@ -526,8 +524,7 @@ class _GasCard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: _MiniStat(
-                    label: 'CO₂',
-                    value: '${kg.toStringAsFixed(0)} kg'),
+                    label: 'CO₂', value: '${kg.toStringAsFixed(0)} kg'),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -990,27 +987,46 @@ Future<void> completeTaskFlow(BuildContext context, TaskItem task,
     context.push('/impact/add-month');
     return;
   }
-  if (s.isLiveBackend && task.verification == Verification.photo) {
-    showAppSnack(
-      context,
-      'Photo verification is not available for online accounts yet.',
-      icon: Icons.info_outline_rounded,
-      color: AppColors.warning,
-    );
-    return;
-  }
   var withPhoto = false;
+  String? proofPath;
   if (task.verification == Verification.photo) {
-    final picked = await showModalBottomSheet<bool>(
-      context: context,
-      builder: (_) => const _PhotoPickerSheet(),
+    final picked = await showProofPickerSheet(
+      context,
+      title: 'Add a photo as proof',
+      subtitle: 'GEDA moderators spot-check uploads. A verified photo earns '
+          '+${s.config.photoBonus} bonus points.',
+      confirmLabel: 'Complete task',
     );
-    if (picked != true) return;
+    if (picked == null) return;
+
+    if (s.isLiveBackend) {
+      // Upload first — the DB function verifies the object really exists
+      // before it awards any photo bonus.
+      if (!context.mounted) return;
+      showAppSnack(context, 'Uploading proof…',
+          icon: Icons.cloud_upload_outlined, color: AppColors.tertiary);
+      try {
+        proofPath = await s.uploadBillProof(
+          bytes: picked.bytes,
+          contentType: picked.contentType,
+        );
+      } catch (error) {
+        if (!context.mounted) return;
+        showAppSnack(
+          context,
+          'Proof upload failed: $error',
+          icon: Icons.error_outline_rounded,
+          color: AppColors.error,
+        );
+        return;
+      }
+    }
     withPhoto = true;
   }
   late final TaskCompletion result;
   try {
-    result = await s.completeTask(task, withPhoto: withPhoto);
+    result =
+        await s.completeTask(task, withPhoto: withPhoto, proofPath: proofPath);
   } catch (error) {
     if (!context.mounted) return;
     showAppSnack(
@@ -1028,9 +1044,7 @@ Future<void> completeTaskFlow(BuildContext context, TaskItem task,
     context,
     result.points > 0
         ? '+${result.points} Green Points'
-        : s.isLiveBackend
-            ? 'Task progress saved. Online rewards are not enabled yet.'
-            : 'Logged! Daily cap reached — verify with your bill for more.',
+        : 'Logged! Daily points cap reached — verify with your bill for more.',
     icon: Icons.stars_rounded,
     color: AppColors.primary,
   );
@@ -1064,114 +1078,6 @@ Future<void> _saveTaskAction(
       'Could not save task progress: $error',
       icon: Icons.error_outline_rounded,
       color: AppColors.error,
-    );
-  }
-}
-
-class _PhotoPickerSheet extends StatefulWidget {
-  const _PhotoPickerSheet();
-
-  @override
-  State<_PhotoPickerSheet> createState() => _PhotoPickerSheetState();
-}
-
-class _PhotoPickerSheetState extends State<_PhotoPickerSheet> {
-  bool _picked = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Add a photo as proof', style: t.headlineSmall),
-          const SizedBox(height: 4),
-          Text(
-              'Our AI checks the image, then your points are credited instantly. +5 bonus for photo proof.',
-              style: t.bodySmall),
-          const SizedBox(height: 20),
-          if (_picked)
-            Container(
-              height: 160,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: const LinearGradient(
-                    colors: [Color(0xFFDDE7DD), Color(0xFFC6D8C7)]),
-              ),
-              child: Stack(
-                children: [
-                  const Center(
-                      child: Icon(Icons.image_rounded,
-                          size: 56, color: Colors.white)),
-                  Positioned(
-                    right: 10,
-                    top: 10,
-                    child: StatusTag(
-                        label: 'Looks good ✓', color: AppColors.success),
-                  ),
-                ],
-              ),
-            )
-          else
-            Row(
-              children: [
-                Expanded(
-                    child: _PickTile(
-                        icon: Icons.photo_camera_rounded,
-                        label: 'Camera',
-                        onTap: () => setState(() => _picked = true))),
-                const SizedBox(width: 12),
-                Expanded(
-                    child: _PickTile(
-                        icon: Icons.photo_library_rounded,
-                        label: 'Gallery',
-                        onTap: () => setState(() => _picked = true))),
-              ],
-            ),
-          const SizedBox(height: 20),
-          PrimaryButton(
-              label: _picked ? 'Complete task' : 'Choose a photo first',
-              onPressed: _picked ? () => Navigator.pop(context, true) : null),
-        ],
-      ),
-    );
-  }
-}
-
-class _PickTile extends StatelessWidget {
-  const _PickTile(
-      {required this.icon, required this.label, required this.onTap});
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        height: 110,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-              color: AppColors.border,
-              width: 1.5,
-              strokeAlign: BorderSide.strokeAlignInside),
-          color: AppColors.background,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 30, color: AppColors.primary),
-            const SizedBox(height: 8),
-            Text(label, style: Theme.of(context).textTheme.labelLarge),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -1438,7 +1344,6 @@ class _BadgeDialog extends StatelessWidget {
   }
 }
 
-
 /// DESIGN-3 task card: icon tile · title/subtitle · circular check · chevron.
 class _TaskCardV3 extends StatelessWidget {
   const _TaskCardV3(
@@ -1464,7 +1369,8 @@ class _TaskCardV3 extends StatelessWidget {
       child: Row(
         children: [
           IconBubble(task.theme.icon,
-              size: 48, color: done ? AppColors.primaryLight : task.theme.color),
+              size: 48,
+              color: done ? AppColors.primaryLight : task.theme.color),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -1533,7 +1439,8 @@ Future<void> _setPeakReminder(BuildContext context, AppState s) async {
   final granted = await NotificationService.requestPermission();
   if (!context.mounted) return;
   if (!granted) {
-    showAppSnack(context, 'Allow notifications in system settings to get reminders',
+    showAppSnack(
+        context, 'Allow notifications in system settings to get reminders',
         icon: Icons.notifications_off_outlined, color: AppColors.warning);
     return;
   }

@@ -78,15 +78,15 @@ class AppState extends ChangeNotifier {
       SupabaseRepo.taskResolver = MockData.taskByIdOrNull;
       _supabaseAuthSubscription =
           SupabaseConfig.client.auth.onAuthStateChange.listen(
-            (state) => unawaited(_applySupabaseUser(state.session?.user)),
-            onError: (Object error, StackTrace stackTrace) {
-              FlutterError.reportError(FlutterErrorDetails(
-                exception: error,
-                stack: stackTrace,
-                library: 'Supabase authentication',
-              ));
-            },
-          );
+        (state) => unawaited(_applySupabaseUser(state.session?.user)),
+        onError: (Object error, StackTrace stackTrace) {
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: error,
+            stack: stackTrace,
+            library: 'Supabase authentication',
+          ));
+        },
+      );
       // Catch an already-restored session (page reload / app resume).
       final restored = SupabaseConfig.client.auth.currentUser;
       if (restored != null) unawaited(_applySupabaseUser(restored));
@@ -134,7 +134,9 @@ class AppState extends ChangeNotifier {
     unawaited(_profileSubscription?.cancel());
     unawaited(_supabaseProfileSubscription?.cancel());
     final channel = _supabaseProfileChannel;
-    if (channel != null) unawaited(SupabaseConfig.client.removeChannel(channel));
+    if (channel != null) {
+      unawaited(SupabaseConfig.client.removeChannel(channel));
+    }
     authChanges.dispose();
     super.dispose();
   }
@@ -151,9 +153,11 @@ class AppState extends ChangeNotifier {
     required String contentType,
   }) {
     if (useSupabase) {
-      return supabaseRepo.uploadBillProof(bytes: bytes, contentType: contentType);
+      return supabaseRepo.uploadBillProof(
+          bytes: bytes, contentType: contentType);
     }
-    return billProofStorage.uploadBillProof(bytes: bytes, contentType: contentType);
+    return billProofStorage.uploadBillProof(
+        bytes: bytes, contentType: contentType);
   }
 
   // ---------- Auth ----------
@@ -162,9 +166,8 @@ class AppState extends ChangeNotifier {
   bool get isSignedIn => user != null;
   final Map<String, Community> _communities = {};
   final Map<String, CommunityGoal> _communityGoals = {};
-  List<Community> get communities => isLiveBackend
-      ? _communities.values.toList()
-      : MockData.communities;
+  List<Community> get communities =>
+      isLiveBackend ? _communities.values.toList() : MockData.communities;
 
   void _seedDemoAccounts() {
     final nisha = AppUser(
@@ -198,8 +201,7 @@ class AppState extends ChangeNotifier {
   Future<String?> signInWithEmail(String email, String password) async {
     if (useSupabase) {
       try {
-        final authUser =
-            await supabaseRepo.signInWithEmail(email, password);
+        final authUser = await supabaseRepo.signInWithEmail(email, password);
         await _applySupabaseUser(authUser);
         return null;
       } catch (error) {
@@ -305,7 +307,8 @@ class AppState extends ChangeNotifier {
   /// Web OAuth client of Firebase project `green-energy-fb652`
   /// (Google Cloud → APIs & Services → Credentials → "Web client (auto
   /// created by Google Service)"). Public by design.
-  static const googleWebClientId = '983072556271-5piiu6gfphbvf3moj1ss2kn396oncr2k.apps.googleusercontent.com';
+  static const googleWebClientId =
+      '983072556271-5piiu6gfphbvf3moj1ss2kn396oncr2k.apps.googleusercontent.com';
 
   firebase_auth.GoogleAuthProvider _googleProvider() =>
       firebase_auth.GoogleAuthProvider()
@@ -400,13 +403,16 @@ class AppState extends ChangeNotifier {
     _supabaseProfileSubscription = null;
     final channel = _supabaseProfileChannel;
     _supabaseProfileChannel = null;
-    if (channel != null) unawaited(SupabaseConfig.client.removeChannel(channel));
+    if (channel != null) {
+      unawaited(SupabaseConfig.client.removeChannel(channel));
+    }
     if (useSupabase) {
       unawaited(PushService.stop());
       unawaited(NotificationService.cancelAll());
-      unawaited(supabaseRepo.signOut().catchError((Object error, StackTrace st) {
+      unawaited(
+          supabaseRepo.signOut().catchError((Object error, StackTrace st) {
         FlutterError.reportError(FlutterErrorDetails(
-          exception: error, stack: st, library: 'Supabase sign-out'));
+            exception: error, stack: st, library: 'Supabase sign-out'));
       }));
     }
     if (useFirebase) {
@@ -678,7 +684,8 @@ class AppState extends ChangeNotifier {
         final badges = data['badges'];
         if (badges is List) {
           final list = badges.map((e) => '$e').toList();
-          if (list.length != u.badges.length || !list.every(u.badges.contains)) {
+          if (list.length != u.badges.length ||
+              !list.every(u.badges.contains)) {
             u.badges = list;
             changed = true;
           }
@@ -1427,7 +1434,7 @@ class AppState extends ChangeNotifier {
 
   /// Completes a task. Returns a result describing points and unlocks.
   Future<TaskCompletion> completeTask(TaskItem task,
-      {bool withPhoto = false}) async {
+      {bool withPhoto = false, String? proofPath}) async {
     if (useSupabase) {
       final now = DateTime.now();
       final badgesBefore = List<String>.from(user!.badges);
@@ -1441,6 +1448,7 @@ class AppState extends ChangeNotifier {
           estUnits: task.estUnitsSaved,
           estCo2: task.estCo2Kg,
           withPhoto: withPhoto,
+          proofPath: proofPath,
         );
       } catch (error) {
         throw StateError(SupabaseRepo.friendlyError(error));
@@ -1741,7 +1749,8 @@ class AppState extends ChangeNotifier {
   Future<int> addMonth(
       {required DateTime month,
       required double units,
-      required bool fromBill}) async {
+      required bool fromBill,
+      String? proofPath}) async {
     final u = user!;
     final b = baseline;
     final r = footprintCalc.calculate(FootprintInput(
@@ -1761,7 +1770,8 @@ class AppState extends ChangeNotifier {
       electricityKg: r.electricityKg,
       cookingKg: r.cookingKg,
       transportKg: r.transportKg,
-      source: fromBill && !useFirebase ? 'bill' : 'manual',
+      source:
+          fromBill && (proofPath != null || !isLiveBackend) ? 'bill' : 'manual',
       unitsSaved: saved,
       rupeesSaved: saved * config.avgTariffPerUnit,
       percentChange: b == null ? 0 : (r.totalKg - b.co2Kg) / b.co2Kg * 100,
@@ -1781,6 +1791,7 @@ class AppState extends ChangeNotifier {
           unitsSaved: entry.unitsSaved,
           rupeesSaved: entry.rupeesSaved,
           percentChange: entry.percentChange,
+          proofPath: proofPath,
         );
         awarded = res.$1;
       } catch (error) {
@@ -1987,13 +1998,12 @@ class AppState extends ChangeNotifier {
         final goal = SupabaseRepo.goalFromRow(row);
         if (goal != null) {
           _communityGoals[community.id] = goal;
-          goal.progress = await supabaseRepo
-              .goalProgressView()
-              .then((rows) => rows
+          goal.progress = await supabaseRepo.goalProgressView().then((rows) =>
+              rows
                   .where((r) => r['community_id'] == community.id)
                   .map((r) => ((r['progress'] as num?) ?? 0).toDouble())
                   .firstOrNull ??
-                  0);
+              0);
           goal.myContribution = 0;
         }
         currentUser.communityId = community.id;
@@ -2610,11 +2620,8 @@ class AppState extends ChangeNotifier {
   /// client listens for those server-side changes instead of computing them.
   void _listenToProfile(String uid) {
     unawaited(_profileSubscription?.cancel());
-    _profileSubscription = _firestore
-        .collection('users')
-        .doc(uid)
-        .snapshots()
-        .listen((snap) {
+    _profileSubscription =
+        _firestore.collection('users').doc(uid).snapshots().listen((snap) {
       final u = user;
       final data = snap.data();
       if (u == null || u.uid != uid || data == null) return;
@@ -2635,16 +2642,15 @@ class AppState extends ChangeNotifier {
       final badges = data['badges'];
       if (badges is List) {
         final list = badges.cast<String>();
-        if (list.length != u.badges.length ||
-            !list.every(u.badges.contains)) {
+        if (list.length != u.badges.length || !list.every(u.badges.contains)) {
           u.badges = List<String>.from(list);
           changed = true;
         }
       }
       final role = data['role'];
       if (role is String) {
-        final parsed = UserRole.values.firstWhere((r) => r.name == role,
-            orElse: () => u.role);
+        final parsed = UserRole.values
+            .firstWhere((r) => r.name == role, orElse: () => u.role);
         if (parsed != u.role) {
           u.role = parsed;
           changed = true;
@@ -2735,6 +2741,7 @@ class AppState extends ChangeNotifier {
   // ---------- Demo mode ----------
   // ---------- Cooking gas (local to this device for now) ----------
   GasConnection? gas;
+
   /// Saves the LPG/PNG connection. Kept in memory; the Firestore `users`
   /// rules whitelist does not include gas fields yet (see TEAM_HANDOFF.md).
   Future<void> saveGasConnection(GasConnection g) async {

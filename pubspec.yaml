@@ -24,6 +24,8 @@ dependencies:
   flutter_timezone: ^5.1.1
   firebase_messaging: ^15.2.10
   url_launcher: ^6.3.3
+  # Photo / bill proof capture (camera + gallery)
+  image_picker: ^1.1.2
   # Supabase backend (Postgres + Auth + Storage + Realtime)
   supabase_flutter: ^2.10.3
 
