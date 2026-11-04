@@ -284,6 +284,19 @@ guard trigger so a client cannot edit its own `points` or `role`.
 
 ---
 
+## Login Credentials
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@gmail.com | Admin@1234 |
+| Citizen | raj@gmail.com | Admin@1234 |
+
+| Account Creation | Access |
+|---|---|
+| Create your own account | Citizen only; admin access is not available through sign-up. |
+
+---
+
 ## 🔑 Admin setup
 
 Deploying does not make anyone an admin. The app reads `profiles.role`.
