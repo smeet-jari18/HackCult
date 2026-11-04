@@ -2,10 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+<<<<<<< HEAD
 	<key>NSCameraUsageDescription</key>
 	<string>LiFE Mitra needs the camera to capture photos of your eco-tasks and electricity bill as proof for Green Points.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>LiFE Mitra needs photo library access so you can attach an existing task photo or electricity bill as proof.</string>
+=======
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

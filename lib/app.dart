@@ -8,6 +8,7 @@ import 'data/app_state.dart';
 import 'router/app_router.dart';
 
 class LifeMitraApp extends StatefulWidget {
+<<<<<<< HEAD
   const LifeMitraApp({
     super.key,
     this.useSupabase = false,
@@ -18,6 +19,10 @@ class LifeMitraApp extends StatefulWidget {
   final bool useSupabase;
 
   /// Legacy Firebase backend — still supported, takes second priority.
+=======
+  const LifeMitraApp({super.key, this.useFirebase = false});
+
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   final bool useFirebase;
 
   @override
@@ -25,10 +30,14 @@ class LifeMitraApp extends StatefulWidget {
 }
 
 class _LifeMitraAppState extends State<LifeMitraApp> {
+<<<<<<< HEAD
   late final AppState _state = AppState(
     useSupabase: widget.useSupabase,
     useFirebase: widget.useFirebase,
   );
+=======
+  late final AppState _state = AppState(useFirebase: widget.useFirebase);
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   late final GoRouter _router = buildRouter(_state);
 
   @override

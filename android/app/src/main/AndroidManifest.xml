@@ -1,10 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
+<<<<<<< HEAD
     <!-- Photo / bill proof capture (image_picker) -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
+=======
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -34,6 +37,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+<<<<<<< HEAD
             <!-- Supabase Google OAuth deep link (io.lifemitra://login-callback) -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -41,6 +45,8 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="io.lifemitra" android:host="login-callback"/>
             </intent-filter>
+=======
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
         </activity>
         <!-- Local notifications: survive reboot + fire while idle -->
         <receiver android:exported="false"

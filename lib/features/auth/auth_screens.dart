@@ -606,7 +606,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: t.bodySmall
                         ?.copyWith(color: AppColors.textSecondary)),
               ],
+<<<<<<< HEAD
               if (!s.isLiveBackend) ...[
+=======
+              if (!s.useFirebase) ...[
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
                 const SizedBox(height: 12),
                 Text(
                     'Demo: nisha@demo.com / Demo@1234 · admin@geda.demo / Admin@1234',

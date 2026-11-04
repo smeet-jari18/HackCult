@@ -2,18 +2,26 @@
 
 A Flutter hackathon prototype for Mission LiFE citizens and a GEDA-style admin portal. The prototype demonstrates sustainability tracking, community goals, solar estimates, survey requests, and Firebase-backed data persistence.
 
+<<<<<<< HEAD
 > **Backend now runs on Supabase** (Postgres + Auth + Storage + Realtime).
 > Setup takes ~5 minutes: see **[README_SUPABASE.md](README_SUPABASE.md)**.
 > The Firebase backend is still in the repo and can be selected with
 > `--dart-define=LIFE_BACKEND=firebase`.
 
+=======
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 ## Run locally
 
 ```bash
 flutter pub get
+<<<<<<< HEAD
 flutter run -d chrome \
   --dart-define=SUPABASE_URL=https://<project-ref>.supabase.co \
   --dart-define=SUPABASE_ANON_KEY=<anon-key>
+=======
+flutter run
+flutter run -d chrome
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 ```
 
 Open `/#/admin/login` in the browser to view the admin portal. Use Flutter 3.47+ and Dart 3.13+.

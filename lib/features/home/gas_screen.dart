@@ -89,7 +89,11 @@ class _GasConnectionScreenState extends State<GasConnectionScreen> {
     HapticFeedback.lightImpact();
     showAppSnack(
         context,
+<<<<<<< HEAD
         s.isLiveBackend
+=======
+        s.useFirebase
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
             ? 'Gas connection saved on this device.'
             : 'Gas connection linked · +50 Green Credits',
         icon: Icons.check_circle_outline_rounded,

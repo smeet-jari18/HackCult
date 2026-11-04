@@ -6,18 +6,24 @@
 
 #include "generated_plugin_registrant.h"
 
+<<<<<<< HEAD
 #include <app_links_linux/app_links_plugin_linux.h>
 #include <file_selector_linux/file_selector_plugin.h>
+=======
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
 #include <flutter_timezone/flutter_timezone_plugin.h>
 #include <url_launcher_linux/url_launcher_plugin.h>
 
 void fl_register_plugins(FlPluginRegistry* registry) {
+<<<<<<< HEAD
   g_autoptr(FlPluginRegistrar) app_links_linux_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "AppLinksPluginLinux");
   app_links_plugin_linux_register_with_registrar(app_links_linux_registrar);
   g_autoptr(FlPluginRegistrar) file_selector_linux_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "FileSelectorPlugin");
   file_selector_plugin_register_with_registrar(file_selector_linux_registrar);
+=======
+>>>>>>> 3925557e47509db90e39ef76831483fc9ae78a47
   g_autoptr(FlPluginRegistrar) flutter_timezone_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "FlutterTimezonePlugin");
   flutter_timezone_plugin_register_with_registrar(flutter_timezone_registrar);
