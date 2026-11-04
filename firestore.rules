@@ -1,0 +1,243 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return signedIn() && request.auth.token.admin == true;
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid)
+        && request.resource.data.role == 'citizen'
+        && request.resource.data.keys().hasOnly([
+          'uid', 'email', 'displayName', 'role', 'authProvider',
+          'onboardingComplete', 'createdAt', 'updatedAt'
+        ]);
+      allow update: if isOwner(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'displayName', 'photoUrl', 'language', 'district', 'pincode',
+          'householdSize', 'homeType', 'roofAccess', 'appliances',
+          'travelMode', 'weeklyKm', 'baselineUnits', 'baselineCo2Kg',
+          'goalPercent', 'onboardingComplete', 'communityId',
+          'peakNudge', 'weatherNudge', 'communityUpdates', 'streakReminders',
+          'notApplicableTaskIds', 'fcmToken', 'fcmPlatform', 'updatedAt'
+        ])
+        && (!request.resource.data.diff(resource.data).affectedKeys()
+              .hasAny(['communityId'])
+          || request.resource.data.communityId == null
+          || existsAfter(
+            /databases/$(database)/documents/communities/$(request.resource.data.communityId)/members/$(uid)
+          ))
+        && (!request.resource.data.keys().hasAny(['notApplicableTaskIds'])
+          || (request.resource.data.notApplicableTaskIds is list
+            && request.resource.data.notApplicableTaskIds.size() <= 100));
+      allow delete: if false;
+
+      match /footprints/{entryId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create, update: if isOwner(uid)
+          && request.resource.data.keys().hasOnly([
+            'month', 'electricityUnits', 'electricityKg', 'cookingKg',
+            'transportKg', 'source', 'isBaseline', 'unitsSaved',
+            'rupeesSaved', 'percentChange', 'pointsAwarded',
+            'lpgCylinders', 'createdAt'
+          ])
+          && request.resource.data.pointsAwarded == 0;
+        allow delete: if false;
+      }
+
+      // Written by Cloud Functions (awardTaskPoints / awardFootprintPoints).
+      match /pointsLedger/{entryId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow write: if false;
+      }
+
+      match /events/{eventId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow write: if false;
+      }
+
+      match /taskLogs/{taskLogId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create, update: if isOwner(uid)
+          && request.resource.data.diff(resource == null ? {} : resource.data)
+              .affectedKeys().hasOnly(['taskId', 'date', 'status'])
+          && request.resource.data.keys().hasOnly([
+            'taskId', 'date', 'status', 'pointsAwarded', 'capped'
+          ])
+          && request.resource.data.taskId is string
+          && request.resource.data.taskId.size() > 0
+          && request.resource.data.taskId.size() <= 100
+          && request.resource.data.date is timestamp
+          && request.resource.data.date <= request.time
+          && request.resource.data.status in [
+            'done', 'skipped', 'notApplicable'
+          ];
+        allow delete: if false;
+      }
+
+      match /solarAssessments/{assessmentId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid)
+          && request.resource.data.keys().hasOnly([
+            'monthlyUnits', 'roofAreaM2', 'category', 'sizeKw',
+            'annualGenUnits', 'grossCost', 'centralSubsidy', 'stateSubsidy',
+            'netCost', 'annualSavings', 'paybackYears', 'co2Avoided25yKg',
+            'createdAt'
+          ])
+          && request.resource.data.monthlyUnits is number
+          && request.resource.data.monthlyUnits > 0
+          && request.resource.data.roofAreaM2 is number
+          && request.resource.data.roofAreaM2 >= 5
+          && request.resource.data.roofAreaM2 <= 120
+          && request.resource.data.category in ['general', 'sc_st']
+          && request.resource.data.sizeKw is number
+          && request.resource.data.sizeKw >= 0
+          && request.resource.data.annualGenUnits is number
+          && request.resource.data.grossCost is number
+          && request.resource.data.centralSubsidy is number
+          && request.resource.data.stateSubsidy is number
+          && request.resource.data.netCost is number
+          && request.resource.data.annualSavings is number
+          && (request.resource.data.paybackYears == null
+            || request.resource.data.paybackYears is number)
+          && request.resource.data.co2Avoided25yKg is number
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.createdAt <= request.time;
+        allow delete: if false;
+      }
+
+      match /surveyRequests/{requestId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid)
+          && request.resource.data.keys().hasOnly([
+            'userName', 'district', 'sizeKw', 'netCost', 'type',
+            'createdAt', 'vendorName', 'status', 'phone', 'preferredSlot'
+          ])
+          && request.resource.data.userName is string
+          && request.resource.data.userName.size() >= 2
+          && request.resource.data.userName.size() <= 80
+          && request.resource.data.district is string
+          && request.resource.data.sizeKw is number
+          && request.resource.data.sizeKw >= 0
+          && request.resource.data.netCost is number
+          && request.resource.data.netCost >= 0
+          && request.resource.data.type in ['survey', 'quote']
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.createdAt <= request.time
+          && request.resource.data.status == 'new'
+          && request.resource.data.phone.matches('^[0-9]{10}$')
+          && request.resource.data.preferredSlot in [
+            'Weekday morning', 'Weekday evening', 'Weekend'
+          ];
+        allow update: if isAdmin()
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['status', 'updatedAt'])
+          && request.resource.data.status in [
+            'new', 'contacted', 'survey_done', 'quoted', 'installed', 'dropped'
+          ];
+        allow delete: if false;
+      }
+
+      match /{document=**} {
+        allow read, write: if false;
+      }
+    }
+
+    match /{path=**}/surveyRequests/{requestId} {
+      allow read: if isAdmin();
+    }
+
+    // Public projection of users (displayName / district / points only),
+    // maintained by the syncLeaderboard Cloud Function.
+    match /leaderboard/{uid} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    // Push campaign log (sendCampaign Cloud Function).
+    match /campaigns/{campaignId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    match /communities/{communityId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'name', 'type', 'district', 'pincode', 'joinCode', 'createdBy',
+          'memberCount', 'totalUnitsSaved', 'goalTitle', 'goalMetric',
+          'goalTarget', 'goalEndDate', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 3
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.type in [
+          'Society', 'Ward', 'Village', 'School', 'Office'
+        ]
+        && request.resource.data.district is string
+        && request.resource.data.pincode.matches('^[0-9]{6}$')
+        && request.resource.data.joinCode is string
+        && request.resource.data.joinCode.size() >= 4
+        && request.resource.data.joinCode.size() <= 8
+        && request.resource.data.memberCount == 1
+        && request.resource.data.goalMetric == 'units'
+        && request.resource.data.goalTarget == 100
+        && request.resource.data.goalEndDate is timestamp
+        && request.resource.data.goalEndDate > request.time
+        && existsAfter(
+          /databases/$(database)/documents/communities/$(communityId)/members/$(request.auth.uid)
+        );
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['memberCount', 'updatedAt'])
+        && request.resource.data.memberCount == resource.data.memberCount + 1
+        && !exists(
+          /databases/$(database)/documents/communities/$(communityId)/members/$(request.auth.uid)
+        )
+        && existsAfter(
+          /databases/$(database)/documents/communities/$(communityId)/members/$(request.auth.uid)
+        );
+      allow delete: if false;
+
+      match /members/{memberUid} {
+        allow read: if signedIn();
+        allow create: if isOwner(memberUid)
+          && request.resource.data.keys().hasOnly([
+            'uid', 'goalContribution', 'joinedAt', 'updatedAt'
+          ])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.goalContribution == 0
+          && request.resource.data.joinedAt == request.time
+          && existsAfter(
+            /databases/$(database)/documents/communities/$(communityId)
+          );
+        allow update: if isOwner(memberUid)
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['goalContribution', 'updatedAt'])
+          && request.resource.data.goalContribution is number
+          && request.resource.data.goalContribution
+              >= resource.data.goalContribution
+          && request.resource.data.goalContribution
+              <= get(
+                /databases/$(database)/documents/communities/$(communityId)
+              ).data.goalTarget;
+        allow delete: if false;
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

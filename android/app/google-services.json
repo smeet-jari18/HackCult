@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "983072556271",
+    "project_id": "green-energy-fb652",
+    "storage_bucket": "green-energy-fb652.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983072556271:android:3dae1dee045e568824071a",
+        "android_client_info": {
+          "package_name": "gov.gujarat.geda.lifemitra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "983072556271-e5iehail068h3qi9lsic6chno1jtlg5i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "gov.gujarat.geda.lifemitra",
+            "certificate_hash": "c96aea3052062de06231cf97ed45e91cdca8598e"
+          }
+        },
+        {
+          "client_id": "983072556271-5piiu6gfphbvf3moj1ss2kn396oncr2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDps9LGSI97xxq051fgRYqHJ9ZoYyy1tT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "983072556271-5piiu6gfphbvf3moj1ss2kn396oncr2k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
