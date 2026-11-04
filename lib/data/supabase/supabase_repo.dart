@@ -59,7 +59,7 @@ class SupabaseRepo {
   Future<void> signInWithGoogle({bool adminPortal = false}) async {
     // Supabase performs the OAuth round-trip and restores the session when the
     // browser/app returns to this URL. For web the current origin is used.
-    final String? redirect = kIsWeb ? null : 'io.lifemitra://login-callback';
+    const String? redirect = kIsWeb ? null : 'io.lifemitra://login-callback';
     await _auth.signInWithOAuth(
       OAuthProvider.google,
       redirectTo: redirect,
