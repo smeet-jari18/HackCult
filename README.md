@@ -564,9 +564,8 @@ Be aware of these before judging or demoing.
 | **Project** | LiFE Mitra Gujarat |
 | **Problem statement** | `HC26-GEDA01` — Mission LiFE citizen engagement |
 | **Repository** | [smeet-jari18/HackCult](https://github.com/smeet-jari18/HackCult) |
-| **Team name** | _to be added_ |
+| **Team name** | Code Sprinters |
 | **Members** | Smeet Jariwala , Shivansh Gupta , Prafull mayanksingh , Swapnil Dhodi |
-| **Organisation** | _to be added_ |
 
 ---
 
